@@ -39,8 +39,8 @@ import React, {
     previousInputValue: 0,
     inputValue: 0,
     selectedSymbol: null,
-    point: false,
-    previousPoint : 0
+    coma: false,
+    beforeComa : 0
   }
 }
  
@@ -76,7 +76,7 @@ import React, {
             if(input != "."){
               return this._handleStringInput(input)
             }else{
-                return this._handlePointInput()
+                return this._handlecomaInput()
             }    
       }
   }
@@ -86,11 +86,11 @@ import React, {
       this.state.inputValue = 0;
       inputValue = (this.state.inputValue * 10) + num;
     }
-    if(this.state.point == true) {
-      let x = this.state.previousPoint + 1 ;
+    if(this.state.coma == true) {
+      let x = this.state.beforeComa + 1 ;
       let dividande = Math.pow(10, x);
       var inputValue = (num/dividande) + this.state.inputValue ;
-      this.state.previousPoint += 1;
+      this.state.beforeComa += 1;
     }else{
       inputValue = (this.state.inputValue * 10) + num;
     }
@@ -98,12 +98,12 @@ import React, {
         inputValue: inputValue
     })
 }
-_handlePointInput(){
-  this.state.point = true;
+_handlecomaInput(){
+  this.state.coma = true;
 }
 _handleStringInput(str) {
-  this.state.point = false;
-  this.state.previousPoint = 0;
+  this.state.coma = false;
+  this.state.beforeComa = 0;
   switch (str) {
       case '/':
       case '*':

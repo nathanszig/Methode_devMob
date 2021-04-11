@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
     private var previousInput: Float? = null
     private var symbol: String? = null
     private var zero: Boolean? = false
-    private var virgule: Boolean = false
+    private var coma: Boolean = false
 
 
     companion object {
@@ -61,11 +61,11 @@ class MainActivity : AppCompatActivity() {
     private fun onCellClicked(value: String) {
         when {
             value.isNum() -> {
-                if(virgule){
+                if(coma){
 
                     input = (value.toFloat() / 10) + previousInput!!
                     updateDisplayContainer(input.toString())
-                    virgule = false
+                    coma = false
                 }else{
                     input = value.toFloat()
                     updateDisplayContainer(value)
@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onPointClicked() {
         updateDisplayContainer(".")
-        virgule = true
+        coma = true
         previousInput = input
     }
 
@@ -103,8 +103,8 @@ class MainActivity : AppCompatActivity() {
             previousInput = null
             symbol = null
             updateDisplayContainer("")
-        }else if(virgule && input == null){
-            virgule = false
+        }else if(coma && input == null){
+            coma = false
         }
 
     }
@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         input = null
         previousInput = null
         symbol = null
-        virgule = false
+        coma = false
         updateDisplayContainer("")
     }
 
