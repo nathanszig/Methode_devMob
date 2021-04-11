@@ -1,3 +1,5 @@
+import 'dart:html';
+import 'dart:math';
 import 'package:calculator_flutter/res/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +31,11 @@ class _CalculatorState extends State<Calculator> {
   double? input;
   double? previousInput;
   String? symbol;
+  bool? coma;
+  String error = "0";
+  int beforeComa = 0;
   static const List<List<String>> grid = <List<String>>[
+ <String>["CE", "C"],
  <String>["7", "8", "9", "-"],
  <String>["4", "5", "6", "*"],
  <String>["1", "2", "3", "/"],
@@ -51,7 +57,7 @@ class _CalculatorState extends State<Calculator> {
              color: AppColors.displayContainerBackground,
              alignment: AlignmentDirectional.centerEnd,
              padding: const EdgeInsets.all(22.0),
-             child: Text(input?.toString() ?? "0"),
+             child: Text(input?.toString() ?? error),
            ),
          ),
          Flexible(
@@ -107,6 +113,16 @@ class _CalculatorState extends State<Calculator> {
      break;
    case '=':
      onEquals();
+     break;
+   case 'CE':
+      onResetValue();
+      break;
+    case 'C':
+      onResetPreviousValue();
+      break;
+    case '.':
+      onComa();
+      break;
  }
 
  // Force l'interface à se redessiner
@@ -114,20 +130,84 @@ class _CalculatorState extends State<Calculator> {
 }
 
 void onNewDigit(String digit) {
-  var valueInput = double.parse('$digit');
-  input = valueInput;
-  print(input);
+  double nbr;
+  int x;
+  int dividande;
+
+  if(input == null){
+    input = 0;
+    nbr = input! * 10 + int.parse(digit);
+    input = double.parse(nbr.toString()) ;
+    print("je suis input null");
+  }else if(coma == true){
+    x = beforeComa + 1;
+    dividande = (pow(10, x)).toInt();
+    print("Avant le calcul $input $dividande $digit");
+    print("calcul:");
+    print((9 / 100) + 9.3);
+    nbr = (int.parse(digit) / dividande) + input!;
+    input = double.parse(nbr.toString());    
+    beforeComa += 1;
+    print(beforeComa);
+  }else{
+    nbr = input! * 10 + int.parse(digit);
+    input = double.parse(nbr.toString());
+  }
 }
 
 void onNewSymbol(String digit) {
- symbol = "$digit";
- previousInput = input;
- input = 0;
- print(symbol);
+ if(input == 0){
+    previousInput = 0;
+    symbol = digit;
+  }else{
+    symbol = digit;
+    previousInput = input;
+    input = 0;
+    coma = false;
+    beforeComa = 0;
+  }
 }
 
 void onEquals() {
-  input = previousInput + "$digit" + input;
+  if(symbol == '+'){
+    var result = previousInput! + input!;
+    input = result.toDouble();
+  }else if (symbol == '-'){
+    var result = previousInput! - input!;
+    input = result.toDouble();
+  }else if (symbol == '*'){
+    var result = previousInput! * input!;
+    input = result.toDouble();
+  }else if (symbol == '/' ){
+    if(input == 0){
+      input = null;
+      error = "ERROR";
+      previousInput= 0;
+      symbol = null;
+    }else{
+      var result = previousInput! / input!;
+    input = result;
+    }
+    
+  }
+}
+
+void onResetValue(){
+  input = 0;
+  symbol = null;
+  previousInput =0; 
+  coma = false;
+  beforeComa = 0;
+}
+
+void onResetPreviousValue(){
+  input = 0;
+  coma = false;
+  beforeComa = 0;
+}
+
+void onComa(){
+  coma = true;
 }
 
 
